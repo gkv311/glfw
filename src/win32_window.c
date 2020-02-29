@@ -2007,7 +2007,9 @@ GLFWAPI HWND glfwGetWin32Window(GLFWwindow* handle)
     return window->win32.handle;
 }
 
-GLFWAPI GLFWwindow* glfwAttachWin32Window(HWND handle, GLFWwindow* share)
+GLFWAPI GLFWwindow* glfwAttachWin32Window(HWND handle,
+                                          GLFWwindow* share,
+                                          HGLRC rendctx)
 {
     _GLFWfbconfig fbconfig;
     _GLFWctxconfig ctxconfig;
@@ -2054,7 +2056,7 @@ GLFWAPI GLFWwindow* glfwAttachWin32Window(HWND handle, GLFWwindow* share)
     window->win32.external = GLFW_TRUE;
     window->win32.externalWindowProc =
         GetWindowLongPtrW(window->win32.handle, GWLP_WNDPROC);
-    SetWindowLongPtrW(window->win32.handle, GWLP_WNDPROC, (LONG_PTR) windowProc);
+  ///  SetWindowLongPtrW(window->win32.handle, GWLP_WNDPROC, (LONG_PTR) windowProc);
 
     {
         const DWORD style = GetWindowLongW(window->win32.handle, GWL_STYLE);
@@ -2077,6 +2079,8 @@ GLFWAPI GLFWwindow* glfwAttachWin32Window(HWND handle, GLFWwindow* share)
         {
             if (!_glfwInitWGL())
                 return GLFW_FALSE;
+
+            window->context.wgl.handle = rendctx;
             if (!_glfwCreateContextWGL(window, &ctxconfig, &fbconfig))
                 return GLFW_FALSE;
         }

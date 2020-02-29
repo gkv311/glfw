@@ -491,6 +491,17 @@ GLFWbool _glfwCreateContextWGL(_GLFWwindow* window,
         return GLFW_FALSE;
     }
 
+    if (window->context.wgl.handle != NULL)
+    {
+        window->context.makeCurrent = makeContextCurrentWGL;
+        window->context.swapBuffers = swapBuffersWGL;
+        window->context.swapInterval = swapIntervalWGL;
+        window->context.extensionSupported = extensionSupportedWGL;
+        window->context.getProcAddress = getProcAddressWGL;
+        window->context.destroy = destroyContextWGL;
+        return GLFW_TRUE;
+    }
+
     pixelFormat = choosePixelFormat(window, ctxconfig, fbconfig);
     if (!pixelFormat)
         return GLFW_FALSE;
